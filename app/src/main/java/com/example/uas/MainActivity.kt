@@ -21,15 +21,18 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -53,15 +56,31 @@ import com.example.uas.ui.presentation.User
 import com.example.uas.ui.theme.UASTheme
 import com.google.firebase.FirebaseApp
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
+        val splashScreen = installSplashScreen()
+
+        // Variable to control splash screen duration
+        var isSplashScreenVisible = true
+        splashScreen.setKeepOnScreenCondition { isSplashScreenVisible }
+        FirebaseApp.initializeApp(this)
+
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            FirebaseApp.initializeApp(this)
+            val coroutineScope = rememberCoroutineScope()
+            LaunchedEffect(Unit) {
+                coroutineScope.launch {
+                    delay(5000) // 5 seconds delay
+                    isSplashScreenVisible = false
+                }
+            }
+
             UASTheme {
                 val navController: NavHostController = rememberNavController()
                 val loginViewModel : LoginViewModel = hiltViewModel()

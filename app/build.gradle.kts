@@ -83,6 +83,7 @@ dependencies {
     implementation("com.google.code.gson:gson:2.9.0")
     implementation("io.coil-kt:coil-compose:2.4.0")
     implementation("androidx.compose.runtime:runtime-livedata:1.7.6")
+    implementation("androidx.core:core-splashscreen:1.0.1")
 
     //Firebase
     implementation ("com.google.dagger:hilt-android:2.48.1")
